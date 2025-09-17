@@ -46,7 +46,7 @@ const deleteTodo = (todo: Todo) : void => {
     doneTasks = doneTasks.filter((t) : boolean => t.id !== todo.id);
 };
 
-const createTodoElement = (todo: Todo, isDone: boolean) : void => {
+const createTodoElement = (todo: Todo, isDone: boolean) : HTMLLIElement => {
     const li = document.createElement('li');
     li.classList.add('render-container__item');
     li.textContent = todo.text;
