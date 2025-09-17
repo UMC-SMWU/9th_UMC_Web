@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMC 1차 과제</title>
+</head>
+<body>
+  <div id="todo-container">
+    <div class="todo-header">GAN TODO</div>
+    
+    <form id="todo-form">
+      <input type="text" id="todo-input" placeholder="할 일 입력" autocomplete="off"/>
+      <button type="submit" id="todo-submit">할 일 추가</button>
+    </form>
+
+    <div class="render-container">
+      <div class="render-section">
+        <div class="render-title">할 일</div>
+        <ul id="todo-list" class="render-container__list"></ul>
+      </div>
+
+      <div class="render-section">
+        <div class="render-title">완료</div>
+        <ul id="done-list" class="render-container__list"></ul>
+      </div>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
