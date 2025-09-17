@@ -44,6 +44,7 @@ const compleTask = (todo: Todo) : void => {
 
 const deleteTodo = (todo: Todo) : void => {
     doneTasks = doneTasks.filter((t) : boolean => t.id !== todo.id);
+    renderTasks();
 };
 
 const createTodoElement = (todo: Todo, isDone: boolean) : HTMLLIElement => {
