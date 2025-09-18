@@ -29,7 +29,7 @@ const renderTasks = (): void => {
     });
 };
 
-//3. 할 일 텍스트 입력 처리 함수. (공백 잘라줌)
+//3. 할 일 텍스트 입력 처리 함수 (공백 잘라줌)
 const getTodoText = (): string => {
     return todoInput.value.trim();
 };
