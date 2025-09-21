@@ -1,38 +1,18 @@
-import './App.css';
-import List, { type Tech } from './components/List';
+// useState 기초 실습 : 버튼 클릭 시 마다 숫자 증가 (0 ->)
+
+import './App.css'
+import { useState } from 'react';
 
 function App() {
-  const nickname = '매튜';
-  const sweetPotato = '고구마';
-  const array = ['REACT', 
-    'NEXT', 
-    'VUE', 
-    'SVELTE', 
-    'ANGULAR', 
-    'REACT-NATIVE'
-  ] as const;
-  
+  const [count, setCount] = useState(0) // 초기값을 0으로 설정
   return (
-    <>
-      <strong className='school'>상명대학교</strong>
-      <p
-        style={{
-          color: 'purple',
-          fontWeight: 'bold',
-          fontSize: '3rem',
-        }}
-      >
-        {nickname}/김용민
-      </p>
-      <h1>{`${nickname}는 ${sweetPotato} 아이스크림을 좋아합니다.`}</h1>
-      <ul>
-        {array.map((yaho, idx) => (
-	        // as를 통한 타입 단언
-          <List key={idx} tech={yaho as Tech} />
-        ))}
-      </ul>
-    </>
-  );
+     <>
+      <h1>{count}</h1>
+      {/* onClick 이벤트 핸들러를 사용함 */}
+      {/* 바꾸고 싶은 두 번째 상태 값을 넣어주기(setCount로 1씩 증가하는 숫자) */}
+      <button onClick={() => setCount(count + 1)}>숫자 증가</button>
+     </>
+  )
 }
 
-export default App;
+export default App
