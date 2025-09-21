@@ -4,10 +4,15 @@ import { useState } from 'react';
 function App() {
   const [count, setCount] = useState(0)
 
-  {/* onClick 시 setCount 하는 함수를 분리해서 작성하기 */}
-
+  // 버튼 클릭 시 6씩 증가하는 함수
   const handleIncreaseNumber = () => {
-    setCount(count + 1)
+    // 이전 상태 값을 인자로 받아서 업데이트
+    setCount(prev => prev + 1)
+    setCount(prev => prev + 1)
+    setCount(prev => prev + 1)
+    setCount(prev => prev + 1)
+    setCount(prev => prev + 1)
+    setCount(prev => prev + 1)
   }
 
   return (
