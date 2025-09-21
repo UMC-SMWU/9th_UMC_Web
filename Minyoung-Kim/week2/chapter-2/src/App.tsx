@@ -1,39 +1,30 @@
 import { useState } from 'react';
 
 function App() {
-  // 초기 상태: name, age, nickname, city를 가진 객체
-  const [person, setPerson] = useState({
-    name: '김용민',
-    age: 26,
-    nickname: '매튜',
-    city: '', // city 키를 미리 넣어둬야 타입이 추론됨
-  });
 
-  // city 업데이트
-  const updateCity = () => {
-    setPerson((prevPerson) => ({
-      ...prevPerson,   // 기존 상태 복사
-      city: '서울',    // city 값만 덮어쓰기
-    }));
+  // count 상태 관리를 위한 useState Hook (초기값 0)
+  const [count, setCount] = useState(0);
+
+  // count 1 씩 증가시키는 함수
+  const increment = () => {
+    setCount(count + 1);
   };
-
-  // age 1 증가
-  const increaseAge = () => {
-    setPerson((prevPerson) => ({
-      ...prevPerson,           // 기존 상태 복사
-      age: prevPerson.age + 1, // age만 +1
-    }));
+  
+  // count 1 씩 감소시키는 함수
+  const decrement = () => {
+    setCount(count - 1);
   };
 
   return (
-    <>
-      <h1>이름: {person.name}</h1>
-      <h2>나이: {person.age}</h2>
-      <h3>닉네임: {person.nickname}</h3>
-      {person.city && <h4>도시: {person.city}</h4>}
-      <button onClick={updateCity}>도시 추가</button>
-      <button onClick={increaseAge}>나이 증가</button>
-    </>
+    <div>
+      <h1>Counter</h1>
+      {/* 현재 카운트 값 */}
+      <p>Count : {count}</p>
+      {/* 감소 버튼 */}
+      <button onClick={decrement}>-1</button>
+      {/* 증가 버튼 */}
+      <button onClick={increment}>+1</button>
+    </div>
   );
 }
 
