@@ -58,11 +58,11 @@ const deleteTodo = (todo: Todo): void => {
 //7. 할 일 아이템 생성 함수 (완료 여부에 따라 버튼 텍스트나 색상 설정)
 const createTodoElement = (todo: Todo, isDone: boolean): HTMLLIElement => {
     const li = document.createElement('li');
-    li.classList.add('render-container_item');
+    li.classList.add('render-container__item');
     li.append(todo.text);
 
     const button = document.createElement('button');
-    button.classList.add('render-container_item-button');
+    button.classList.add('render-container__item-button');
 
     if (isDone) {
         button.textContent = '삭제';
@@ -81,7 +81,7 @@ const createTodoElement = (todo: Todo, isDone: boolean): HTMLLIElement => {
         }
     } );
 
-    li.append(button);
+    li.appendChild(button);
     return li;
 };
 
