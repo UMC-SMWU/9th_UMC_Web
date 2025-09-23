@@ -11,7 +11,7 @@ body {
 }
 
 .todo-container {
-  width: 400px;
+  width: 500px;
   padding: 15px;
   background-color: rgb(230, 248, 255);
   border-radius: 16px;
@@ -60,7 +60,7 @@ body {
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    gap: 90px;
+    align-items: flex-start; /*각 섹션을 위쪽 기준으로 정렬*/
     
 }
 
@@ -69,6 +69,7 @@ body {
     flex-direction: column;
     margin: 20px 0;
     align-items: center;
+    width: 230px;
 }
 
 .render-title {

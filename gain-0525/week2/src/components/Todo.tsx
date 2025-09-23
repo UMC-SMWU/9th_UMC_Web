@@ -36,7 +36,7 @@ const Todo = () : ReactElement => {
                     onChange={(e) : void => setInput(e.target.value)}
                     type='text' className="todo-input" placeholder='할 일 입력' required />
                 <button type='submit' className="todo-submit">
-                    일 추가
+                    할 일 추가
                 </button>
             </form>
             <div className="render-container">
