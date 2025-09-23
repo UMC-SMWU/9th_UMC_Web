@@ -1,4 +1,4 @@
-export type TOdo = {
+export type TTodo = {
     id: number;
     text: string;
 };
