@@ -22,6 +22,12 @@ const Todo = (): Element => {
     setDoneTodos((prevDoneTodos): TTodo[] => [...prevDoneTodos, todo]);
   };
 
+  const deleteTodo = (todo: TTodo) : void => {
+    setDoneTodos((prevDoneTodo) : TTodo[] =>
+        prevDoneTodo.filter((t) : boolean => t.id !== todo.id)
+    );
+  };
+
   return (
     <div className='todo-container'>
       <h1 className='todo-container__header'>YONG TODO</h1>
@@ -68,6 +74,7 @@ const Todo = (): Element => {
                 <li key={todo.id} className='render-container__item'>
                   <span className='render-container__item-text'>{todo.text}</span>
                   <button
+                    onClick={(): void => deleteTodo(todo)}
                     style={{ 
                         backgroundColor: '#dc3545' 
                     }}
