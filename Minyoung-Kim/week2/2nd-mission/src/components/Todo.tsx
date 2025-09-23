@@ -4,13 +4,26 @@ import type { TTodo } from '../types/todo';
 const Todo = (): Element => {
   const [todos, setTodos] = useState<TTodo[]>([]);
   const [doneTodos, setDoneTodos] = useState<TTodo[]>([]);
-  const [input, setInput] = useState<String>('');
+  const [input, setInput] = useState<string>('');
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) : void => {
+    e.preventDefault();
+    const text = input.trim();
+
+    if (text) {
+        const newTodo: TTodo = { id: Date.now(), text };
+        setTodos((prevTodos) : TTodo[] => [...prevTodos, newTodo]);
+        setInput('');
+    }
+  };
 
   return (
     <div className='todo-container'>
       <h1 className='todo-container__header'>YONG TODO</h1>
-      <form className='todo-container__form'>
+      <form onSubmit={handleSubmit} className='todo-container__form'>
         <input
+          value={input}
+          onChange={(e): void => setInput(e.target.value)}
           type='text'
           className='todo-container__input'
           placeholder='할 일 입력'
