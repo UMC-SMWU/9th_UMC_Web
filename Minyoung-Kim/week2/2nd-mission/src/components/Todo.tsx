@@ -17,6 +17,11 @@ const Todo = (): Element => {
     }
   };
 
+  const completeTodo = (todo: TTodo) : void => {
+    setTodos((prevTodos) : TTodo[] => prevTodos.filter((t) : boolean => t.id !== todo.id));
+    setDoneTodos((prevDoneTodos): TTodo[] => [...prevDoneTodos, todo]);
+  };
+
   return (
     <div className='todo-container'>
       <h1 className='todo-container__header'>YONG TODO</h1>
@@ -42,6 +47,7 @@ const Todo = (): Element => {
                 <li key={todo.id} className='render-container__item'>
                   <span className='render-container__item-text'>{todo.text}</span>
                   <button
+                  onClick={() : void => completeTodo(todo)}
                     style={{ 
                         backgroundColor: '#28a745' 
                     }}
