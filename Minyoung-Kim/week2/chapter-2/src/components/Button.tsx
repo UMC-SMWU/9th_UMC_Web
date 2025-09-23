@@ -1,7 +1,7 @@
 // 공용 컴포넌트 Button을 별도로 만들어서 관리
 
 interface ButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   text: string;
 }
 

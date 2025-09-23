@@ -1,24 +1,13 @@
-import { useState } from 'react';
 import ButtonGroup from './components/ButtonGroup';
+import { useCount } from './context/CounterProvider';
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
-
-  const handleDecrement = () => {
-    setCount(count - 1);
-  };
+  const { count } = useCount();
 
   return (
     <>
       <h1>{count}</h1>
-      <ButtonGroup
-        handleIncrement={handleIncrement}
-        handleDecrement={handleDecrement}
-      />
+      <ButtonGroup />
     </>
   );
 }
