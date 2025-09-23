@@ -1,30 +1,25 @@
 import { useState } from 'react';
+import ButtonGroup from './components/ButtonGroup';
 
 function App() {
-
-  // count 상태 관리를 위한 useState Hook (초기값 0)
   const [count, setCount] = useState(0);
 
-  // count 1 씩 증가시키는 함수
-  const increment = () => {
+  const handleIncrement = () => {
     setCount(count + 1);
   };
-  
-  // count 1 씩 감소시키는 함수
-  const decrement = () => {
+
+  const handleDecrement = () => {
     setCount(count - 1);
   };
 
   return (
-    <div>
-      <h1>Counter</h1>
-      {/* 현재 카운트 값 */}
-      <p>Count : {count}</p>
-      {/* 감소 버튼 */}
-      <button onClick={decrement}>-1</button>
-      {/* 증가 버튼 */}
-      <button onClick={increment}>+1</button>
-    </div>
+    <>
+      <h1>{count}</h1>
+      <ButtonGroup
+        handleIncrement={handleIncrement}
+        handleDecrement={handleDecrement}
+      />
+    </>
   );
 }
 
