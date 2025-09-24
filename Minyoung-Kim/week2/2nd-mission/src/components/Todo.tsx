@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import type { TTodo } from "../types/todo";
+import TodoList from "./TodoList";
+import TodoForm from "./TodoForm";
 
 const Todo = () : Element => {
 
@@ -31,6 +33,7 @@ const Todo = () : Element => {
 
     <div className="todo-container">
         <h1 className="todo-container__header">YONG TODO</h1>
+        <TodoForm />
         <div className="render-container">
             <TodoList
                 title='할 일'

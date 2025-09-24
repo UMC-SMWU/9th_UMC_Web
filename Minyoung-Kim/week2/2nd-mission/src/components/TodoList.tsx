@@ -1,6 +1,6 @@
-import React from "react";
+import React, { type JSX } from "react";
 
-const TodoList = () : Element => {
+const TodoList = () : JSX.Element => {
     return <div></div>;
 };
 
