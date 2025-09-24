@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import type { TTodo } from '../types/todo';
 
 const TodoBefore = (): Element => {
