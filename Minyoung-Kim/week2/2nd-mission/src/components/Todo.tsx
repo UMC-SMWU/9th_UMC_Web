@@ -2,30 +2,21 @@ import { useState, type FormEvent, type JSX } from "react";
 import type { TTodo } from "../types/todo";
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
+import { useTodo } from "../context/TodoContext";
 
-// ✅ JSX import 제거, 반환 타입 JSX.Element 그대로 사용
+// JSX import 제거, 반환 타입 JSX.Element 그대로 사용
 const Todo = (): JSX.Element => {
-  const [todos, setTodos] = useState<TTodo[]>([]);
-  const [doneTodos, setDoneTodos] = useState<TTodo[]>([]);
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState<string>('');
+  const { todos, completeTodo, addTodo, deleteTodo, doneTodos } = useTodo();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const text = input.trim();
+
     if (text) {
-      const newTodo: TTodo = { id: Date.now(), text };
-      setTodos(prev => [...prev, newTodo]);
-      setInput("");
+      addTodo(text);
+      setInput('');
     }
-  };
-
-  const completeTodo = (todo: TTodo) => {
-    setTodos(prev => prev.filter(t => t.id !== todo.id));
-    setDoneTodos(prev => [...prev, todo]);
-  };
-
-  const deleteTodo = (todo: TTodo) => {
-    setDoneTodos(prev => prev.filter(t => t.id !== todo.id));
   };
 
   return (

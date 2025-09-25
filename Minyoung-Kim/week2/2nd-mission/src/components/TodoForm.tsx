@@ -1,12 +1,20 @@
-import React, { type JSX } from 'react'
+import { useState, type FormEvent, type JSX } from 'react'
+import { useTodo } from '../context/TodoContext';
 
-interface TodoFormProps {
-  input: string;
-  setInput: (input: string) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
 
-const TodoForm = ({ input, setInput, handleSubmit }: TodoFormProps): JSX.Element => {
+const TodoForm = (): JSX.Element => {
+  const [input, setInput] = useState<string>('');
+  const { addTodo } = useTodo();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const text = input.trim();
+
+    if (text) {
+      addTodo(text);
+      setInput('');
+    }
+  };
   return (
     <form onSubmit={handleSubmit} className='todo-container__form'>
       <input
