@@ -1,31 +1,28 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type JSX } from 'react';
 import type { TTodo } from '../types/todo';
 
-const TodoBefore = (): Element => {
+const TodoBefore = (): JSX.Element => {
   const [todos, setTodos] = useState<TTodo[]>([]);
   const [doneTodos, setDoneTodos] = useState<TTodo[]>([]);
   const [input, setInput] = useState<string>('');
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) : void => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const text = input.trim();
-
     if (text) {
-        const newTodo: TTodo = { id: Date.now(), text };
-        setTodos((prevTodos) : TTodo[] => [...prevTodos, newTodo]);
-        setInput('');
+      const newTodo: TTodo = { id: Date.now(), text };
+      setTodos(prev => [...prev, newTodo]);
+      setInput('');
     }
   };
 
-  const completeTodo = (todo: TTodo) : void => {
-    setTodos((prevTodos) : TTodo[] => prevTodos.filter((t) : boolean => t.id !== todo.id));
-    setDoneTodos((prevDoneTodos): TTodo[] => [...prevDoneTodos, todo]);
+  const completeTodo = (todo: TTodo): void => {
+    setTodos(prev => prev.filter(t => t.id !== todo.id));
+    setDoneTodos(prev => [...prev, todo]);
   };
 
-  const deleteTodo = (todo: TTodo) : void => {
-    setDoneTodos((prevDoneTodo) : TTodo[] =>
-        prevDoneTodo.filter((t) : boolean => t.id !== todo.id)
-    );
+  const deleteTodo = (todo: TTodo): void => {
+    setDoneTodos(prev => prev.filter(t => t.id !== todo.id));
   };
 
   return (
@@ -45,19 +42,16 @@ const TodoBefore = (): Element => {
         </button>
       </form>
       <div className='render-container'>
-        {/* 할 일 목록 */}
         <div className='render-container__section'>
           <h2 className='render-container__title'>할 일</h2>
-          <ul className='render-container__list' id='todo-list'>
-            {todos.map((todo) : any => (
-                <li key={todo.id} className='render-container__item'>
-                  <span className='render-container__item-text'>{todo.text}</span>
-                  <button
-                  onClick={() : void => completeTodo(todo)}
-                    style={{ 
-                        backgroundColor: '#28a745' 
-                    }}
-                    className='render-container__item-button'
+          <ul className='render-container__list'>
+            {todos.map(todo => (
+              <li key={todo.id} className='render-container__item'>
+                <span className='render-container__item-text'>{todo.text}</span>
+                <button
+                  onClick={() => completeTodo(todo)}
+                  style={{ backgroundColor: '#28a745' }}
+                  className='render-container__item-button'
                 >
                   완료
                 </button>
@@ -65,20 +59,16 @@ const TodoBefore = (): Element => {
             ))}
           </ul>
         </div>
-
-        {/* 완료 목록 */}
         <div className='render-container__section'>
           <h2 className='render-container__title'>완료</h2>
-          <ul className='render-container__list' id='done-list'>
-            {doneTodos.map((todo) : any => (
-                <li key={todo.id} className='render-container__item'>
-                  <span className='render-container__item-text'>{todo.text}</span>
-                  <button
-                    onClick={(): void => deleteTodo(todo)}
-                    style={{ 
-                        backgroundColor: '#dc3545' 
-                    }}
-                    className='render-container__item-button'
+          <ul className='render-container__list'>
+            {doneTodos.map(todo => (
+              <li key={todo.id} className='render-container__item'>
+                <span className='render-container__item-text'>{todo.text}</span>
+                <button
+                  onClick={() => deleteTodo(todo)}
+                  style={{ backgroundColor: '#dc3545' }}
+                  className='render-container__item-button'
                 >
                   삭제
                 </button>
@@ -88,7 +78,7 @@ const TodoBefore = (): Element => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TodoBefore
+export default TodoBefore;

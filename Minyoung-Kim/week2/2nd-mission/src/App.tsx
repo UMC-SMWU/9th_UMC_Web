@@ -1,12 +1,11 @@
-import './App.css'
-import TodoBefore from './components/TodoBefore';
+import './App.css';
 import Todo from './components/Todo';
+import type { JSX } from 'react';
 
-function App() : Element {
+function App(): JSX.Element {
   return (
     <>
       <Todo />
-      <TodoBefore/>
     </>
   );
 }
