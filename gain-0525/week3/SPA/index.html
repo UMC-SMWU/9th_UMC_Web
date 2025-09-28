@@ -1,13 +1,46 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spa</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>History API SPA</title>
+</head>
+<body>
+  <nav>
+    <a href="/" data-link>Home</a>
+    <a href="/about" data-link>About</a>
+    <a href="/contact" data-link>Contact</a>
+  </nav>
+
+  <div id="app"></div>
+
+  <script>
+    const routes = {
+      "/": "<h1>Home Page</h1>",
+      "/about": "<h1>About Page</h1>",
+      "/contact": "<h1>Contact Page</h1>",
+    };
+
+    function render(pathname) {
+      const app = document.getElementById("app");
+      app.innerHTML = routes[pathname] || "<h1>404 Not Found</h1>";
+    }
+
+    document.addEventListener("click", (e) => {
+      if (e.target.matches("[data-link]")) {
+        e.preventDefault();
+        const url = e.target.getAttribute("href");
+        history.pushState({}, "", url);
+        render(url);
+      }
+    });
+
+    window.addEventListener("popstate", () => {
+      render(window.location.pathname);
+    });
+
+    render(window.location.pathname);
+  </script>
+</body>
 </html>
+
