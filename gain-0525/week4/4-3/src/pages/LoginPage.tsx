@@ -20,10 +20,10 @@ const LoginPage = () => {
         try {
             const response= await postSignin(values);
             setItem(response.data.accessToken);
+            console.log(response);
         } catch(error) {
             alert(error?.message);
         }
-        console.log(response);
         
     };
 
