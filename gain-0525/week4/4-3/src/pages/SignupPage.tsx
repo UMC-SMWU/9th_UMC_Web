@@ -11,7 +11,7 @@ const schema = z.object({
     .min(8, { message: "비밀번호는 8자 이상이어야 합니다." })
     .max(20, { message: "비밀번호는 20자 이하이어야 합니다." }),
   passwordCheck: z.string(),
-  nickname: z.string().min(1, { message: "닉네임을 입력해주세요." }),
+  name: z.string().min(1, { message: "닉네임을 입력해주세요." }),
 }).refine(data => data.password === data.passwordCheck, {
   message: "비밀번호가 일치하지 않습니다.",
   path: ["passwordCheck"],
@@ -30,7 +30,7 @@ const MultiStepSignup = () => {
       email: "",
       password: "",
       passwordCheck: "",
-      nickname: "",
+      name: "",
     },
   });
 
@@ -108,16 +108,16 @@ const MultiStepSignup = () => {
       {step === 3 && (
         <div className="flex flex-col gap-3 w-full max-w-sm">
           <input
-            {...register("nickname")}
+            {...register("name")}
             type="text"
-            placeholder="닉네임"
-            className={`border p-3 rounded-md ${errors.nickname ? "border-red-500 bg-red-200" : "border-gray-300"}`}
+            placeholder="이름"
+            className={`border p-3 rounded-md ${errors.name ? "border-red-500 bg-red-200" : "border-gray-300"}`}
           />
-          {errors.nickname && <div className="text-red-500 text-sm">{errors.nickname.message}</div>}
+          {errors.name && <div className="text-red-500 text-sm">{errors.name.message}</div>}
 
           <button
             onClick={handleSubmit(onSubmit)}
-            disabled={!values.nickname || !!errors.nickname}
+            disabled={!values.name || !!errors.name}
             className="w-full bg-green-600 text-white py-3 rounded-md disabled:bg-gray-400"
           >
             회원가입
