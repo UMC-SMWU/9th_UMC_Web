@@ -15,7 +15,7 @@ export type ResponseSignupDto = CommonRespone<{
     bio: string| null;
     createdAt: Date;
     updateAt: Date;
-}>;
+}>; 
 
 //로그인
 export type RequestSigninDto = {
