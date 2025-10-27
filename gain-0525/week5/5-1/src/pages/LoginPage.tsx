@@ -21,10 +21,16 @@ const LoginPage = () => {
             const response= await postSignin(values);
             setItem(response.data.accessToken);
             console.log(response);
-        } catch(error) {
-            alert(error?.message);
+
+            //로그인 성공 후 홈페이지로 이동
+            navigate('/');
+        } catch(error: unknown) {
+            if (error instanceof Error) {
+                alert(error.message);
+        }   else {
+                alert('로그인 실패');
         }
-        
+    }
     };
 
     const isDisabled:boolean = 
