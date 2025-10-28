@@ -1,36 +1,40 @@
+// LoginPage.tsx
 import { validateSignin, type UserSigninInformation } from '../utils/validate';
 import useForm from '../hooks/useForm';
 import { useNavigate } from 'react-router-dom';
 import GoogleLogo from '../assets/GoogleLogo.png'; 
 import { postSignin } from '../apis/auth';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { LOCAL_STORAGE_KEY } from '../constants/key';
-
+import { useLocalStorage } from '../hooks/useLocalStorage';
 const LoginPage = () => {
-    const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+    const { setItem: setAccessToken } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+    const { setItem: setRefreshToken } = useLocalStorage(LOCAL_STORAGE_KEY.refreshToken);
     const navigate = useNavigate();
-    const { values, errors, touched, getInputProps } = 
-    useForm<UserSigninInformation>({
+    const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
         initialValue: { email: '', password: '' },
         validate: validateSignin,
     });
 
     const handleSubmit = async() => {
-        console.log(values);
         try {
-            const response= await postSignin(values);
-            setItem(response.data.accessToken);
-            console.log(response);
+            const response = await postSignin(values);
+            const accessToken = response.data.accessToken;
+            const refreshToken = response.data.refreshToken;
 
-            //로그인 성공 후 홈페이지로 이동
-            navigate('/');
-        } catch(error: unknown) {
+            if (accessToken) {
+                setAccessToken(accessToken);
+                setRefreshToken(refreshToken);
+                navigate('/');
+            } else {
+                alert("로그인 응답에 accessToken이 없습니다.");
+            }
+        } catch (error: unknown) {
             if (error instanceof Error) {
                 alert(error.message);
-        }   else {
+            } else {
                 alert('로그인 실패');
+            }
         }
-    }
     };
 
     const isDisabled:boolean = 
