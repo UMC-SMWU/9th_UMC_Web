@@ -5,6 +5,7 @@ import { useAuth } from "../context/useAuth";
 
 
 const MyPage = () => {
+  const navigate = useNavigate();
   const {logout} = useAuth();
     const [data, setData] = useState<ResponseMyInfoDto>([]);
     useEffect(()=> {
@@ -19,6 +20,7 @@ const MyPage = () => {
 
     const handleLogout = async() => {
       await logout();
+      navigate("/");
     }
     return ( 
         <div>
@@ -26,7 +28,11 @@ const MyPage = () => {
             <img src={data.data?.avatar as string || "이미지 없음"} alt={"구글 로고"} />
             <h1>{data.data?.email}</h1>
         
-        <button onClick={handleLogout}>로그아웃</button>
+        <button className="cursor-pointer bg-blue-300 rounded-sm p-5 hover:scale-90"
+         onClick={handleLogout}
+         >
+          로그아웃
+          </button>
       </div>
     );
 }
