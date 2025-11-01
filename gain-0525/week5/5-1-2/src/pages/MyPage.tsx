@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyInfo } from "../apis/auth";
 import { type ResponseMyInfoDto } from "../types/auth";
 import { useAuth } from "../context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 
 const MyPage = () => {
