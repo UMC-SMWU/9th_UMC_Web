@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import HomeLayout from "./layouts/HomeLayout";
 import SignupPage from "./pages/SignupPage";
 import MyPage from "./pages/MyPage";
+import { AuthProvider } from "./context/AuthContext";
 
 //1.홈페이지
 //2.로그인 페이지
@@ -30,7 +31,9 @@ function App() {
   
 
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }
 
