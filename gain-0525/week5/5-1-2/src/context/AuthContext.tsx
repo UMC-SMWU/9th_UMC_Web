@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const login = async (signinData: RequestSigninDto) => {
     try {
       const { data } = await postSignin(signinData);
+      console.log("서버 응답 데이터:", data);
 
       if (data) {
         const newAccessToken = data.accessToken;
@@ -53,6 +54,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setAccessToken(newAccessToken);
         setRefreshToken(newRefreshToken);
         alert("로그인 성공");
+        window.location.href = "/my";
       }
     } catch (error) {
       console.error("로그인 오류", error);
