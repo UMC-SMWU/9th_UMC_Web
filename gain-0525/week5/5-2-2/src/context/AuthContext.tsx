@@ -1,8 +1,9 @@
-import { createContext, useState, type PropsWithChildren } from "react";
+import { createContext, useEffect, useState, type PropsWithChildren } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import type { RequestSigninDto } from "../types/auth";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { postLogout, postSignin } from "../apis/auth";
+import { axiosInstance } from "../apis/axios";
 
 interface AuthContextType {
   accessToken: string | null;
@@ -38,6 +39,35 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [refreshToken, setRefreshToken] = useState<string | null>(
     getRefreshTokenFromStorage()
   );
+  
+  //새로 추가한 부분임
+    useEffect(() => {
+    const initializeAuth = async () => {
+      if (refreshToken) {
+        try {
+          const { data } = await axiosInstance.post("/v1/auth/refresh", {
+            refresh: refreshToken,
+          });
+          const newAccessToken = data.data.accessToken;
+          const newRefreshToken = data.data.refreshToken;
+
+          setAccessTokenInStorage(newAccessToken);
+          setRefreshTokenInStorage(newRefreshToken);
+
+          setAccessToken(newAccessToken);
+          setRefreshToken(newRefreshToken);
+        } catch (err) {
+          console.error("자동 로그인 실패", err);
+          removeAccessTokenFromStorage();
+          removeRefreshTokenFromStorage();
+          setAccessToken(null);
+          setRefreshToken(null);
+        }
+      }
+    };
+
+    initializeAuth();
+  }, []);
 
   const login = async (signinData: RequestSigninDto) => {
     try {
