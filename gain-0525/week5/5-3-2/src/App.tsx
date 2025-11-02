@@ -44,6 +44,8 @@ const protectedRoutes:RouteObject[] = [
 const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
 
 function App() {
+  console.log("API URL:", import.meta.env.VITE_SERVER_API_URL);
+  console.log("TEST VALUE:", import.meta.env.VITE_TEST);
 
   return (
     <AuthProvider>

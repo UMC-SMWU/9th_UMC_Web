@@ -10,6 +10,8 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        console.log("컴포넌트 마운트 시 import.meta.env 확인:", import.meta.env);
+    console.log("VITE_SERVER_API_URL:", import.meta.env.VITE_SERVER_API_URL);
         if (accessToken) {
             navigate('/');
         }
@@ -24,6 +26,12 @@ const LoginPage = () => {
 
     const handleSubmit = async() => {
     await login(values);
+    }
+
+    const handleGoogleLogin = async() => {
+        console.log(import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login");
+        window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login";
+        
 
             
     };
@@ -92,7 +100,8 @@ const LoginPage = () => {
                 </div>
 
                 <button
-                    onClick={handleSubmit}
+                    type="button"
+                    onClick={handleGoogleLogin}
                     className='w-full flex items-center justify-center gap-2 bg-transparent text-[#8f8f93] border border-[#afafaf] py-3 rounded-md text-lg font-medium transition-colors cursor-pointer'
                 >
                     <img src={GoogleLogo} alt="Google Logo" className='w-6 h-6' />
@@ -102,5 +111,6 @@ const LoginPage = () => {
         </div>
     );
 };
+
 
 export default LoginPage;
