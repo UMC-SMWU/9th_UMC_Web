@@ -1,39 +1,35 @@
 import { validateSignin, type UserSigninInformation } from '../utils/validate';
 import useForm from '../hooks/useForm';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import GoogleLogo from '../assets/GoogleLogo.png'; 
 import { useAuth } from '../context/useAuth';
 import { useEffect } from 'react';
 
 const LoginPage = () => {
-    const {login, accessToken} = useAuth();
+    const { login, accessToken } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = (location.state as { from?: string })?.from || "/";
 
     useEffect(() => {
-        console.log("컴포넌트 마운트 시 import.meta.env 확인:", import.meta.env);
-    console.log("VITE_SERVER_API_URL:", import.meta.env.VITE_SERVER_API_URL);
         if (accessToken) {
-            navigate('/');
+            navigate(from, { replace: true });
         }
-    }, [accessToken, navigate]);
-
+    }, [accessToken, navigate, from]);
 
     const { values, errors, touched, getInputProps } = 
-    useForm<UserSigninInformation>({
-        initialValue: { email: '', password: '' },
-        validate: validateSignin,
-    });
+        useForm<UserSigninInformation>({
+            initialValue: { email: '', password: '' },
+            validate: validateSignin,
+        });
 
     const handleSubmit = async() => {
-    await login(values);
+        await login(values);
+        // navigate는 useEffect에서 처리됨
     }
 
-    const handleGoogleLogin = async() => {
-        console.log(import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login");
+    const handleGoogleLogin = () => {
         window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login";
-        
-
-            
     };
 
     const isDisabled:boolean = 
@@ -42,7 +38,6 @@ const LoginPage = () => {
 
     return (
         <div className='flex flex-col items-center justify-center h-full gap-4 px-6'>
-            {/* 뒤로가기 + 로그인 타이틀 */}
             <div className='flex items-center gap-2 w-full max-w-sm'>
                 <button
                     onClick={() => navigate(-1)}
@@ -53,7 +48,6 @@ const LoginPage = () => {
                 <span className='flex-1 text-center text-xl font-bold'>로그인</span>
             </div>
 
-            {/* 로그인 폼 */}
             <div className='flex flex-col gap-3 w-full max-w-sm'>
                 <input
                     {...getInputProps('email')}
@@ -112,5 +106,7 @@ const LoginPage = () => {
     );
 };
 
-
 export default LoginPage;
+
+
+
