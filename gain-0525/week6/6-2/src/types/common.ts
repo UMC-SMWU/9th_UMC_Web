@@ -7,14 +7,11 @@ export type CommonResponse<T> = {
     data: T;
 }
 
-export type CursorBasedResponse<T>={
-    status:boolean;
-    statusCode: number;
-    message:string;
-    data: T;
-    nextCursor:number;
-    hasNext: boolean;
-}
+export type CursorBasedResponse<T> = CommonResponse<{
+  data: T,
+  nextCursor: number | null;
+  hasNext: boolean;
+}>;
 
 export type PaginationDto = {
     cursor?:number;
@@ -26,14 +23,21 @@ export type PaginationDto = {
 export type Comment = {
   id: number;
   content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string; // <- string으로
+  updatedAt: string; // <- string으로
   authorId: number;
   lpId: number;
   author?: {
+    id: number;
     name: string;
+    email: string;
+    bio?: string | null;
+    avatar?: string | null;
+    createdAt: string;
+    updatedAt: string;
   };
 };
+
 
 // 댓글 목록의 'data' 페이로드 타입
 export type CommentListData = {

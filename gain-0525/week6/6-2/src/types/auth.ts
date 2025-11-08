@@ -1,4 +1,4 @@
-import type { CommonRespone } from "./common";
+import type { CommonResponse } from "./common";
 //회원 가입
 export type RequestSignupDto = {
     name: string;
@@ -8,7 +8,7 @@ export type RequestSignupDto = {
     password:string;
 }
 
-export type ResponseSignupDto = CommonRespone<{
+export type ResponseSignupDto = CommonResponse<{
     id:number;
     name: string;
     email: string;
@@ -23,7 +23,7 @@ export type RequestSigninDto = {
     password: string;
 };
 
-export type ResponseSigninDto = CommonRespone<{
+export type ResponseSigninDto = CommonResponse<{
     id: number;
     name: string;
     accessToken: string;
@@ -32,7 +32,7 @@ export type ResponseSigninDto = CommonRespone<{
 
 //내 정보 조회
 
-export type ResponseMyInfoDto = CommonRespone<{
+export type ResponseMyInfoDto = CommonResponse<{
     id:number;
     name: string;
     email: string;
