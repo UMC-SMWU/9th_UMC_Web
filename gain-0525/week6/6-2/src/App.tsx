@@ -11,6 +11,7 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import LpDetailPage  from "./pages/LpDetailPage"; 
+import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 
 //1.홈페이지
 //2.로그인 페이지
@@ -26,7 +27,8 @@ const publicRoutes:RouteObject[] = [
       {index: true, element: <HomePage />},
       {path: 'login', element: <LoginPage />},
       {path: 'signup', element: <SignupPage />},
-      {path: 'lp/:lpid', element: <LpDetailPage />}
+      {path: 'lp/:lpid', element: <LpDetailPage />},
+      {path: "v1/auth/google/callback", element: <GoogleCallbackPage />},
     ],
   }
 ]
