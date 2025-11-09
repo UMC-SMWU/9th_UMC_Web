@@ -27,10 +27,8 @@ export const postLogout = async() => {
 }
 
 // 닉네임 변경 API
-export const patchNickname = async (nickname: string) => {
-  const { data } = await axiosInstance.patch("v1/users", {
-    nickname,
-  });
+
+export const updateUserName = async (name: string) => {
+  const { data } = await axiosInstance.patch("v1/users", { name });
   return data;
 };
-
