@@ -64,7 +64,19 @@ export const deleteLike = async (lpId: number): Promise<void> => {
 };
 
 
-export const postLpComment = async (lpId: number, body: { content: string }) => {
-  const { data } = await axiosInstance.post(`/v1/lps/${lpId}/comments`, body);
-  return data;
+export const postComment = async (lpId: number, content: string) => {
+  const res = await axiosInstance.post(`/v1/lps/${lpId}/comments`, { content });
+  return res.data; // Axios는 res.data에 실제 데이터 있음
+};
+
+// 댓글 수정
+export const updateComment = async (lpId: number, commentId: number, content: string) => {
+  const res = await axiosInstance.put(`/v1/lps/${lpId}/comments/${commentId}`, { content });
+  return res.data;
+};
+
+// 댓글 삭제
+export const deleteComment = async (lpId: number, commentId: number) => {
+  const res = await axiosInstance.delete(`/v1/lps/${lpId}/comments/${commentId}`);
+  return res.data;
 };

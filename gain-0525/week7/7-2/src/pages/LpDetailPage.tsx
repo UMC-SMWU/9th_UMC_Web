@@ -8,6 +8,7 @@ import { PAGINATION_ORDER } from "../enums/common";
 import { useGetLpComments } from "../hooks/queries/useGetLpComment";
 import { usePostLike } from "../hooks/mutations/usePostLike";
 import { useDeleteLike } from "../hooks/mutations/useDeleteLike";
+import { usePostComment } from '../hooks/mutations/usePostComment'
 
 const SKELETON_COUNT = 4;
 
@@ -16,20 +17,28 @@ const CommentForm = ({ lpId }: { lpId: number }) => {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const postCommentMutation = usePostComment(lpId, PAGINATION_ORDER.desc);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (!newComment.trim()) {
       setError("댓글 내용을 입력해주세요.");
       return;
     }
-    setError("");
-    console.log(`[LP ID: ${lpId}] 댓글 생성 시도:`, newComment);
-    setNewComment("");
-  };
 
+    setError("");
+    postCommentMutation.mutate(newComment, {
+      onSuccess: () => {
+        setNewComment("");
+      }
+    })
+  }
   return (
-    <div className="mt-6">
+    <form onSubmit={handleSubmit} className="mt-6">
       <h3 className="text-lg font-semibold mb-2">댓글 작성</h3>
       <textarea
+        name="comment"
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
         className="w-full border rounded-md p-2"
@@ -37,13 +46,15 @@ const CommentForm = ({ lpId }: { lpId: number }) => {
         placeholder="댓글을 입력하세요..."
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
       <button
-        onClick={handleSubmit}
+        type="submit"
+        disabled={postCommentMutation.isPending}
         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         댓글 등록
       </button>
-    </div>
+    </form>
   );
 };
 
@@ -216,6 +227,8 @@ const LpDetailPage = () => {
                   <p className="text-xs text-gray-500">
                     {new Date(comment.createdAt).toLocaleString()}
                   </p>
+
+                  
                 </div>
               ))}
         </div>
