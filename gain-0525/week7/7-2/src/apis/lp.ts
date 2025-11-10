@@ -62,3 +62,9 @@ export const postLike = async (lpId: number): Promise<LikeResponse> => {
 export const deleteLike = async (lpId: number): Promise<void> => {
   await axiosInstance.delete(`/v1/lps/${lpId}/likes`);
 };
+
+
+export const postLpComment = async (lpId: number, body: { content: string }) => {
+  const { data } = await axiosInstance.post(`/v1/lps/${lpId}/comments`, body);
+  return data;
+};
