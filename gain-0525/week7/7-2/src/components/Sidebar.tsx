@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar, user, accessTok
           <div className="p-4 border-t">
             <button
               onClick={handleWithdrawClick}
-              className="w-full text-gray-500 py-2 rounded hover:text-red-600 transition-colors text-left"
+              className="w-full text-gray-500 py-2 rounded hover:text-red-600 transition-colors text-center"
             >
               회원탈퇴
             </button>
