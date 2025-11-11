@@ -1,25 +1,28 @@
+// src/components/Navbar.tsx
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getMyInfo } from '../apis/auth';
 import Sidebar from './Sidebar';
 
 const Navbar = () => {
   const { accessToken, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const queryClient = useQueryClient();
+  
 
-  // ✅ React Query로 사용자 정보 가져오기 (MyPage와 동일 queryKey)
   const { data: userData } = useQuery({
     queryKey: ["myInfo"],
     queryFn: getMyInfo,
-    enabled: !!accessToken, // accessToken이 있을 때만 실행
+    enabled: !!accessToken,
   });
 
-  const user = userData?.data;
+  const user = userData?.data ?? null;
 
   const handleLogout = async () => {
     await logout();
+    queryClient.invalidateQueries({ queryKey: ["myInfo"] }); // 캐시 무효화
     setSidebarOpen(false);
   };
 
@@ -72,7 +75,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
         closeSidebar={() => setSidebarOpen(false)}
@@ -80,7 +82,6 @@ const Navbar = () => {
         accessToken={accessToken}
       />
     </nav>
-
   );
 };
 
