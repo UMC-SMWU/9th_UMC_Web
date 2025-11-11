@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLpDetail } from "../apis/lp";
-import type { ResponseLpDto } from '../types/lp'
+import type { ResponseLpDto } from "../types/lp";
 import { useAuth } from "../context/useAuth";
 import { PAGINATION_ORDER } from "../enums/common";
 import { useGetLpComments } from "../hooks/queries/useGetLpComment";
 import { usePostLike } from "../hooks/mutations/usePostLike";
 import { useDeleteLike } from "../hooks/mutations/useDeleteLike";
-import { usePostComment } from '../hooks/mutations/usePostComment'
+import { usePostComment } from "../hooks/mutations/usePostComment";
+import { useUpdateComment } from "../hooks/mutations/useUpdateComment";
+import { useDeleteComment } from "../hooks/mutations/useDeleteComment";
 
 const SKELETON_COUNT = 4;
 
@@ -16,24 +18,20 @@ const SKELETON_COUNT = 4;
 const CommentForm = ({ lpId }: { lpId: number }) => {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState("");
-
   const postCommentMutation = usePostComment(lpId, PAGINATION_ORDER.desc);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!newComment.trim()) {
       setError("댓글 내용을 입력해주세요.");
       return;
     }
-
     setError("");
     postCommentMutation.mutate(newComment, {
-      onSuccess: () => {
-        setNewComment("");
-      }
-    })
-  }
+      onSuccess: () => setNewComment(""),
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mt-6">
       <h3 className="text-lg font-semibold mb-2">댓글 작성</h3>
@@ -65,13 +63,16 @@ const LpDetailPage = () => {
   const { accessToken } = useAuth();
   const showLoginAlert = !accessToken;
 
+  const userId = Number(localStorage.getItem("userId"));
+  const queryClient = useQueryClient();
+
   // LP 상세 정보
   const { data: lpData, isLoading: isLpLoading, isError: isLpError, refetch } =
     useQuery<ResponseLpDto>({
       queryKey: ["lp", numericLpId],
       queryFn: () => getLpDetail(numericLpId),
       staleTime: 1000 * 60 * 5,
-      enabled: !!numericLpId,
+      enabled: numericLpId > 0,
     });
 
   // 댓글 무한 쿼리 + 정렬
@@ -93,13 +94,55 @@ const LpDetailPage = () => {
   // 좋아요 상태 계산
   const hasLiked = useMemo(() => {
     if (!lpData?.data || !accessToken) return false;
-    const userId = Number(localStorage.getItem("userId")); // 로그인 시 userId를 localStorage에 저장했다고 가정
     return lpData.data.likes.some((like) => like.userId === userId);
-  }, [lpData, accessToken]);
+  }, [lpData, accessToken, userId]);
 
-  // 좋아요/좋아요 취소 훅
   const postLikeMutation = usePostLike(numericLpId);
   const deleteLikeMutation = useDeleteLike(numericLpId);
+
+  // 댓글 수정 / 삭제 훅
+  const updateCommentMutation = useUpdateComment(numericLpId);
+  const deleteCommentMutation = useDeleteComment(numericLpId);
+
+  // 댓글 수정 상태 관리
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editedContent, setEditedContent] = useState("");
+
+  const handleEdit = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditedContent(currentContent);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditedContent("");
+  };
+
+  const handleSaveEdit = (commentId: number) => {
+    if (!editedContent.trim()) return alert("내용을 입력해주세요.");
+    updateCommentMutation.mutate(
+      { commentId, content: editedContent },
+      {
+        onSuccess: () => {
+          setEditingCommentId(null);
+          setEditedContent("");
+          queryClient.invalidateQueries({ queryKey: ["lpComments", numericLpId] });
+        
+        },
+      }
+    );
+  };
+
+  const handleDelete = (commentId: number) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      deleteCommentMutation.mutate(commentId, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["lpComments", numericLpId] });
+        }
+      });
+      
+    }
+  };
 
   // 댓글 무한 스크롤
   useEffect(() => {
@@ -218,22 +261,70 @@ const LpDetailPage = () => {
             ? Array.from({ length: SKELETON_COUNT }).map((_, idx) => (
                 <div key={idx} className="h-16 rounded bg-gray-300 animate-pulse" />
               ))
-            : comments.map((comment) => (
-                <div key={comment.id} className="border-b pb-2">
-                  <p className="font-semibold">
-                    {comment.author?.name || "익명"}
-                  </p>
-                  <p className="text-gray-700">{comment.content}</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(comment.createdAt).toLocaleString()}
-                  </p>
+            : comments.map((comment) => {
+                const isMyComment = comment.author?.id === userId;
 
-                  
-                </div>
-              ))}
+                return (
+                  <div key={comment.id} className="border-b pb-2">
+                    <p className="font-semibold">
+                      {comment.author?.name || "익명"}
+                    </p>
+
+                    {editingCommentId === comment.id ? (
+                      <div>
+                        <textarea
+                          placeholder="댓글을 입력하세요"
+                          value={editedContent}
+                          onChange={(e) => setEditedContent(e.target.value)}
+                          className="w-full border rounded p-2 text-sm"
+                        />
+                        <div className="flex gap-2 mt-1">
+                          <button
+                            onClick={() => handleSaveEdit(comment.id)}
+                            className="px-2 py-1 text-sm bg-blue-500 text-white rounded"
+                          >
+                            저장
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="px-2 py-1 text-sm bg-gray-300 rounded"
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-gray-700">{comment.content}</p>
+                    )}
+
+                    <p className="text-xs text-gray-500">
+                      {new Date(comment.createdAt).toLocaleString()}
+                    </p>
+
+                    {isMyComment && editingCommentId !== comment.id && (
+                      <div className="flex gap-2 mt-1">
+                        <button
+                          onClick={() =>
+                            handleEdit(comment.id, comment.content)
+                          }
+                          className="text-blue-500 text-sm hover:underline"
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => handleDelete(comment.id)}
+                          className="text-red-500 text-sm hover:underline"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
         </div>
 
-        {/* 하단 무한 스크롤 스켈레톤 */}
+        {/* 무한 스크롤 로딩 영역 */}
         <div
           ref={observerRef}
           className="h-10 flex justify-center items-center mt-4"

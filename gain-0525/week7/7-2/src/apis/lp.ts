@@ -70,13 +70,19 @@ export const postComment = async (lpId: number, content: string) => {
 };
 
 // 댓글 수정
-export const updateComment = async (lpId: number, commentId: number, content: string) => {
-  const res = await axiosInstance.put(`/v1/lps/${lpId}/comments/${commentId}`, { content });
-  return res.data;
+export const updateComment = async (
+  lpId: number,
+  commentId: number,
+  content: string
+) => {
+  const response = await axiosInstance.patch(`/v1/lps/${lpId}/comments/${commentId}`, {
+    content,
+  });
+  return response.data;
 };
 
 // 댓글 삭제
 export const deleteComment = async (lpId: number, commentId: number) => {
-  const res = await axiosInstance.delete(`/v1/lps/${lpId}/comments/${commentId}`);
-  return res.data;
+  const response = await axiosInstance.delete(`/v1/lps/${lpId}/comments/${commentId}`);
+  return response.data;
 };
