@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 
 
 export default function MoviePage(): ReactElement {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]); //TMDB에서 받아올 영화 데이터 배열들
   //1. 로딩 상태
   const [isPending, setIsPending] = useState(false);
   //2. 에러상태
