@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (signinData: RequestSigninDto) => Promise<void>;
   logout: () => Promise<void>;
   setTokens: (access: string, refresh: string) => void; // 콜백용
+  
 }
 
 export const AuthContext = createContext<AuthContextType>({
