@@ -6,6 +6,8 @@ import clsx from "clsx";
 import Modal from "../components/Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
+import useDebounce from "../hooks/useDebounce";
+import { SEARCH_DEBOUNCE_DELAY } from "../constants/delay";
 
 const SKELETON_COUNT = 8;
 
@@ -18,14 +20,17 @@ interface LPData {
 
 const HomePage = () => {
   const [search, setSearch] = useState("");
+  const debouncedValue = useDebounce(search, SEARCH_DEBOUNCE_DELAY);
   const [sort, setSort] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchType, setSearchType] = useState<"title" | "tag">("title");
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
+  
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
-    useGetInfiniteLpList({ limit: 10, search, order: sort });
+    useGetInfiniteLpList({ limit: 10, search: debouncedValue, order: sort, searchType },
+    );
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const lps = data?.pages.flatMap((page) => page.data.data) ?? [];
@@ -69,7 +74,23 @@ const HomePage = () => {
 
   return (
     <div className="mt-20 px-4">
-      {/* 정렬 버튼 */}
+      {/* 검색창 */}
+      <select
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value as "title" | "tag")}
+        className="p-2 border rounded"
+      >
+        <option value="title">제목</option>
+        <option value="tag">태그</option>
+      </select>
+      <input
+        type="text"
+        placeholder="검색어를 입력하세요..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-64 p-2 border rounded mb-4"
+      />
+      {/* 정렬 버튼 */ }
       <div className="flex space-x-2 mb-4">
         <button
           onClick={() => setSort(PAGINATION_ORDER.desc)}

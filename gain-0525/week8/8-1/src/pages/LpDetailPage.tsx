@@ -212,6 +212,18 @@ const LpDetailPage = () => {
       </p>
       <p>{lp.content}</p>
 
+      {/*태그 표시*/}
+      <div className="flex flex-wrap gap-2 my-2">
+        {lp.tags.map((tag) => (
+          <span
+            key={typeof tag ==="string" ? tag: tag.id}
+            className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-sm"
+          >
+            #{typeof tag === "string" ? tag: tag.name}
+          </span>
+        ))}
+      </div>
+
       {/* 좋아요 버튼 */}
       <button
         onClick={() => {

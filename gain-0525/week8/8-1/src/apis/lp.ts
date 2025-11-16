@@ -3,16 +3,23 @@ import { axiosInstance } from "./axios";
 import type { ResponseLpListDto } from "../types/lp";
 import type { ResponseLpDto } from "../types/lp";
 import { PAGINATION_ORDER } from "../enums/common";
-export const getLpList = async (
 
+export const getLpList = async (paginationDto: PaginationDto): Promise<ResponseLpListDto> => {
+  const { search, searchType, ...rest } = paginationDto;
 
-    paginationDto: PaginationDto,
-): Promise<ResponseLpListDto> => {
-    const {data} = await axiosInstance.get('/v1/lps', {
-        params:paginationDto,
-    })
-
+  if (searchType === "tag" && search) {
+    // 태그 검색 전용 엔드포인트
+    const { data } = await axiosInstance.get(`/v1/lps/tag/${encodeURIComponent(search)}`, {
+      params: rest,
+    });
     return data;
+  }
+
+  // 기본 LP 리스트 (제목 검색 포함)
+  const { data } = await axiosInstance.get("/v1/lps", {
+    params: paginationDto,
+  });
+  return data;
 };
 
 export const getLpDetail = async (lpid: number): Promise<ResponseLpDto> => {

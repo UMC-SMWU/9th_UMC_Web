@@ -18,6 +18,7 @@ export type PaginationDto = {
     limit?: number;
     search?: string;
     order?: PAGINATION_ORDER;
+    searchType?: "title" | "tag";
 }
 
 export type Comment = {

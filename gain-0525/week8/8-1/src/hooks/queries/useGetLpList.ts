@@ -15,6 +15,7 @@ function useGetLpList({ cursor, search, order, limit }: PaginationDto) {
       }),
     staleTime: 1000 * 60 * 5, // 5분
     gcTime: 1000 * 60 * 10,   // 10분
+    enabled: !!search?.trim(),
     select: (data) => data.data.data, // data.data.data 구조 그대로 반환
   });
 }
