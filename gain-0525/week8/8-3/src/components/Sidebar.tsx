@@ -1,7 +1,8 @@
 // src/components/Sidebar.tsx
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import ConfirmModal from "./ConfirmModal";
 import { axiosInstance } from "../apis/axios";
 import type { ResponseMyInfoDto } from "../types/auth";
@@ -18,6 +19,32 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar, user, accessTok
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // 1. ESC 키로 Sidebar 닫기
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isOpen) {
+        closeSidebar();
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, closeSidebar]);
+
+  // 2. Sidebar 열림 시 배경 스크롤 막기
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    // 클린업: 컴포넌트 언마운트 시 초기화
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  // 3. 회원 탈퇴 mutation
   const withdrawMutation = useMutation({
     mutationFn: async () => {
       const response = await axiosInstance.delete("/v1/users");
@@ -29,8 +56,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar, user, accessTok
       queryClient.invalidateQueries({ queryKey: ["myInfo"] });
       navigate("/login");
     },
-    onError: (error: any) => {
-      alert(error.response?.data?.message || "회원 탈퇴 실패");
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data?.message || "회원 탈퇴 실패");
+      } else {
+        alert("회원 탈퇴 실패");
+      }
     },
   });
 
