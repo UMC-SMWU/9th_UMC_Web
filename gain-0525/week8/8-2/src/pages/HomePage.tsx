@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
 import useDebounce from "../hooks/useDebounce";
 import { SEARCH_DEBOUNCE_DELAY } from "../constants/delay";
+import useThrottle from "../hooks/useThrottle";
 
 const SKELETON_COUNT = 8;
 
@@ -27,15 +28,14 @@ const HomePage = () => {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
-    useGetInfiniteLpList({ limit: 10, search: debouncedValue, order: sort, searchType },
-    );
+    useGetInfiniteLpList({ limit: 10, search: debouncedValue, order: sort, searchType });
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const lps = data?.pages.flatMap((page) => page.data.data) ?? [];
 
-  // LP 추가 mutation (FormData 없이 JSON)
+  // LP 추가 mutation
   const createLp = useMutation({
     mutationFn: async (lpData: LPData) => {
       const { data } = await axiosInstance.post("/v1/lps", {
@@ -53,7 +53,25 @@ const HomePage = () => {
     },
   });
 
-  // 무한 스크롤
+  // ----------------------
+  // 1. 스크롤 위치 state + throttle
+  // ----------------------
+  const [scrollY, setScrollY] = useState(0);
+  const throttledScrollY = useThrottle(scrollY, 2000);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    console.log("Throttled scrollY:", throttledScrollY);
+  }, [throttledScrollY]);
+
+  // ----------------------
+  // 2. IntersectionObserver 무한 스크롤
+  // ----------------------
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
 
@@ -90,7 +108,8 @@ const HomePage = () => {
         onChange={(e) => setSearch(e.target.value)}
         className="w-64 p-2 border rounded mb-4"
       />
-      {/* 정렬 버튼 */ }
+
+      {/* 정렬 버튼 */}
       <div className="flex space-x-2 mb-4">
         <button
           onClick={() => setSort(PAGINATION_ORDER.desc)}
@@ -170,7 +189,7 @@ const HomePage = () => {
         </div>
       )}
 
-      {/* 스크롤 끝 트리거 */}
+      {/* 무한 스크롤 감지 div */}
       <div ref={observerRef} className="h-1" />
 
       {/* 우측 하단 + 버튼 */}
