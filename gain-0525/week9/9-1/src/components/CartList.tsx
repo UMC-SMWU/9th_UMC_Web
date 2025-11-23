@@ -1,7 +1,9 @@
-import cartItems from "../constants/cartItems";
+import { useSelector } from "../hooks/useCustomRedux";
 import CartItem from "./CartItem";
 
 const CartList = () => {
+    const {cartItems } = useSelector ((state) => state.cart);
+
     return ( 
       <div className="flex flex-col items-center justify-center">
         <ul>
