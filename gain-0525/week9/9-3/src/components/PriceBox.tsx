@@ -1,20 +1,21 @@
-import { useDispatch, useSelector } from "../hooks/useCustomRedux";
-import { openModal } from '../features/modal/modalSlice';
+import { useCartStore } from "../hooks/useCartStore";
+import { useModalStore } from "../hooks/useModalStore";
 
 const PriceBox = () => {
-    const { total } = useSelector((state) => state.cart);
-    const dispatch = useDispatch();
+    // 상태 가져오기
+    const total = useCartStore((state) => state.total);
+    const openModal = useModalStore((state) => state.openModal);
 
     const handleInitializeCart = () => {
-        dispatch(openModal());
+        openModal();
     }
+
+    // 액션 가져오기
     
     return ( 
         <div className="p-12 flex justify-between">
             <div className="border p-4 rounded-md cursor-pointer">
-                <button
-                    onClick = {handleInitializeCart}
-                >
+                <button onClick={handleInitializeCart}>
                     장바구니 초기화
                 </button>
             </div>

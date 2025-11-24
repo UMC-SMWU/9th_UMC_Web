@@ -6,6 +6,7 @@ import PriceBox from "./components/PriceBox"
 import Modal from './components/Modal';
 
 function App() {
+
   return (
     <Provider store={store}>
       <Navbar/>
