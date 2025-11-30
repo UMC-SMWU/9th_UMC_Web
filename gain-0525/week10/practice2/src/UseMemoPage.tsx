@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactElement } from "react";
+import { useCallback, useMemo, useState, type ReactElement } from "react";
 import TextInput from "./components/TextInput";
 import { findPrimeNumbers } from "./utils/math";
 
@@ -7,9 +7,9 @@ export default function UseMemoPage() : ReactElement {
     const [limit, setLimit] = useState(0);
     const [text, setText] = useState('');
 
-    const handleChangeText = (text: string) : void => {
+    const handleChangeText = useCallback((text: string) : void => {
         setText(text);
-    }
+    },[])
 
     const primes = useMemo(() => findPrimeNumbers(limit), [limit]);
     return (

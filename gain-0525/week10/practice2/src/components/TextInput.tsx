@@ -1,4 +1,4 @@
-import { type ReactElement } from "react";
+import { memo, type ReactElement } from "react";
 
 interface ITextInput {
     onChange: (text: string) => void;
@@ -14,5 +14,5 @@ const TextInput = ({ onChange } : ITextInput) : ReactElement => {
         />
     )
 };
-export default (TextInput);
+export default memo(TextInput);
 // 동작을 하는 척 한다
