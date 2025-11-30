@@ -15,3 +15,4 @@ const TextInput = ({ onChange } : ITextInput) : ReactElement => {
     )
 };
 export default memo(TextInput);
+// 동작을 하는 척 한다
