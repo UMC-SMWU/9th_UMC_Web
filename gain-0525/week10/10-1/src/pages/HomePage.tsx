@@ -2,7 +2,8 @@ import { useCallback, useMemo, useState } from "react";
 import MovieFilter from "../components/MovieFilter";
 import MovieList from "../components/MovieList";
 import useFetch from "../hooks/useFetch";
-import { type MovieFilters, type MovieResponse } from "../types/movie";
+import { type Movie, type MovieFilters, type MovieResponse } from "../types/movie";
+import MovieModal from "../components/MovieModal";
 
 export default function HomePage() {
     const [filters, setFilters] = useState<MovieFilters>({
@@ -10,6 +11,8 @@ export default function HomePage() {
         include_adult: false,
         language: "ko-KR",
     });
+
+    const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
     const axiosRequestConfig = useMemo(
         () : { params: MovieFilters }=> ({
@@ -39,11 +42,17 @@ export default function HomePage() {
             {isLoading ? (
                 <div>로딩 중 입니다...</div>
             ) : (
-                <MovieList movies = {data?.results || []} />
+                <MovieList movies = {data?.results || []}
+                            onClickMovie = {setSelectedMovie} />
+             )}
+
+             {selectedMovie && (
+                <MovieModal 
+                    movie={selectedMovie}
+                    onClose={() => setSelectedMovie(null)}
+                />
              )}
         </div>
     );
 };
 
-// 검색 필터
-// 영화 무비
